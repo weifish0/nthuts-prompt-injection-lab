@@ -58,6 +58,74 @@
         .floating-mockup {
             animation: float 6s ease-in-out infinite;
         }
+        
+        /* 漢堡選單動畫 */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hamburger-menu.active {
+            right: 0;
+        }
+        
+        .hamburger-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+            z-index: 999;
+        }
+        
+        .hamburger-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 漢堡圖標動畫 */
+        .hamburger-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .hamburger-icon.active {
+            transform: rotate(90deg);
+        }
+        
+        /* 選單項目動畫 */
+        .menu-item {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .hamburger-menu.active .menu-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .hamburger-menu.active .menu-item:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+        
+        .hamburger-menu.active .menu-item:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+        
+        .hamburger-menu.active .menu-item:nth-child(3) {
+            transition-delay: 0.3s;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -80,8 +148,8 @@
                 
                 <!-- 行動版漢堡選單按鈕 -->
                 <div class="md:hidden">
-                    <button class="text-gray-300 hover:text-blue-400 transition-colors duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button id="hamburger-btn" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                        <svg id="hamburger-icon" class="hamburger-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
@@ -89,6 +157,52 @@
             </div>
         </nav>
     </header>
+    
+    <!-- 漢堡選單遮罩層 -->
+    <div id="hamburger-overlay" class="hamburger-overlay"></div>
+    
+    <!-- 漢堡選單 -->
+    <div id="hamburger-menu" class="hamburger-menu">
+        <div class="p-6">
+            <!-- 選單標題 -->
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl font-bold text-white">🎯 滲透任務</h2>
+                <button id="close-menu" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- 選單項目 -->
+            <nav class="space-y-4">
+                <a href="#" class="menu-item block text-gray-300 hover:text-blue-400 transition-colors duration-300 font-medium py-3 px-4 rounded-lg hover:bg-gray-700">
+                    🏠 任務中心
+                </a>
+                <a href="/lab1.html" class="menu-item block text-gray-300 hover:text-blue-400 transition-colors duration-300 font-medium py-3 px-4 rounded-lg hover:bg-gray-700">
+                    🔑 關卡 1 - 通關密鑰竊取
+                </a>
+                <a href="/lab2.html" class="menu-item block text-gray-300 hover:text-blue-400 transition-colors duration-300 font-medium py-3 px-4 rounded-lg hover:bg-gray-700">
+                    🎭 關卡 2 - 身份偽造攻擊
+                </a>
+            </nav>
+            
+            <!-- 關卡難度說明 -->
+            <div class="mt-8 pt-6 border-t border-gray-600">
+                <h3 class="text-sm font-semibold text-gray-400 mb-3">關卡難度</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <span class="text-xs text-gray-300">初級 - 基礎 Prompt Injection</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-xs text-gray-300">高級 - 身份偽造技術</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- 主要內容區 (Main) -->
     <main class="flex-1">
@@ -222,7 +336,7 @@
                                 <span class="text-green-400 font-semibold">提示：</span>有時候，最直接的問題不是最好的方法。
                             </p>
                         </div>
-                        <a href="/lab1.html" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
+                        <a href="./lab1.html" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
                             🎯 開始滲透 →
                         </a>
                     </div>
@@ -252,7 +366,7 @@
                                 <span class="text-green-400 font-semibold">提示：</span>在數位世界中，身份可能比你想像的更脆弱。
                             </p>
                         </div>
-                        <a href="/lab2.html" class="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
+                        <a href="./lab2.html" class="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
                             🎯 開始滲透 →
                         </a>
                     </div>
@@ -271,6 +385,59 @@
             </p>
         </div>
     </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // 漢堡選單功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const hamburgerOverlay = document.getElementById('hamburger-overlay');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeMenuBtn = document.getElementById('close-menu');
+            
+            // 開啟選單
+            function openMenu() {
+                hamburgerMenu.classList.add('active');
+                hamburgerOverlay.classList.add('active');
+                hamburgerIcon.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 防止背景滾動
+            }
+            
+            // 關閉選單
+            function closeMenu() {
+                hamburgerMenu.classList.remove('active');
+                hamburgerOverlay.classList.remove('active');
+                hamburgerIcon.classList.remove('active');
+                document.body.style.overflow = ''; // 恢復滾動
+            }
+            
+            // 事件監聽器
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            hamburgerOverlay.addEventListener('click', closeMenu);
+            
+            // 點擊選單項目後自動關閉選單
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', closeMenu);
+            });
+            
+            // 鍵盤 ESC 關閉選單
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && hamburgerMenu.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+            
+            // 視窗大小改變時關閉選單（避免桌面版顯示選單）
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) { // md breakpoint
+                    closeMenu();
+                }
+            });
+        });
+    </script>
     
 </body>
 </html>
