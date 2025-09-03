@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關卡 1: 通關密鑰竊取 - 清華大學 AI 滲透任務</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 自定義 CSS 動畫 -->
+    <style>
+        /* 主標題漸層動畫 */
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #3b82f6, #8b5cf6);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 3s ease infinite;
+        }
+        
+        /* 確保文字在沒有背景剪裁支援的瀏覽器中仍然可見 */
+        @supports not (-webkit-background-clip: text) {
+            .gradient-text {
+                -webkit-text-fill-color: #3b82f6;
+                color: #3b82f6;
+            }
+        }
+        
+        /* 浮動動畫效果 */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .floating-mockup {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* 終端滾動條樣式 */
+        .terminal-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 3px;
+        }
+        
+        .terminal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    
+    <!-- 頁首 (Header) -->
+    <header class="bg-gray-800 shadow-lg">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo/標題 -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-white">🎯 清華滲透任務</h1>
+                </div>
+                
+                <!-- 桌面版導覽列 -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-blue-400 transition-colors duration-300 font-medium">🏠 任務中心</a>
+                    <a href="lab1.html" class="text-blue-400 font-medium">🔑 關卡 1</a>
+                    <a href="lab2.html" class="text-gray-300 hover:text-blue-400 transition-colors duration-300 font-medium">🎭 關卡 2</a>
+                </div>
+                
+                <!-- 行動版漢堡選單按鈕 -->
+                <div class="md:hidden">
+                    <button class="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- 主要內容區 (Main) -->
+    <main class="flex-1 py-8 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <!-- 關卡標示 -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-blue-400">🔑 關卡 1</h2>
+            </div>
+            
+            <!-- 對話視窗 -->
+            <div class="space-y-6">
+                <!-- 訊息顯示區 -->
+                <div class="bg-gray-900 rounded-lg border border-gray-700 h-[60vh] flex flex-col">
+                    <div class="bg-gray-800 px-4 py-3 rounded-t-lg border-b border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-gray-400 text-sm ml-4">AI Assistant Terminal</span>
+                            </div>
+                            <!-- 清空按鈕 -->
+                            <button 
+                                id="clear-storage-btn"
+                                class="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
+                                title="清空對話紀錄和進度"
+                            >
+                                🗑️ 清空
+                            </button>
+                        </div>
+                    </div>
+                    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto terminal-scroll space-y-4">
+                        <!-- 對話紀錄將在這裡載入 -->
+                    </div>
+                </div>
+                
+                <!-- 使用者輸入區 -->
+                <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                    <form id="chat-form" class="space-y-4">
+                        <div>
+                            <input 
+                                type="text" 
+                                id="message-input" 
+                                placeholder="輸入你的 Prompt..." 
+                                class="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                required
+                            >
+                        </div>
+                        <div class="flex space-x-3">
+                            <button 
+                                type="submit" 
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300"
+                            >
+                                📤 發送訊息
+                            </button>
+                            <button 
+                                type="button" 
+                                id="verify-key-btn"
+                                class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300"
+                            >
+                                🔑 驗證金鑰
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 頁尾 (Footer) -->
+    <footer class="bg-gray-800 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">
+                © made with love by Will Cheng.
+            </p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // DOM 元素
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const verifyKeyBtn = document.getElementById('verify-key-btn');
+        const clearStorageBtn = document.getElementById('clear-storage-btn');
+        
+        // API 端點
+        const CHAT_API = 'https://ai-odyssey-backend-rbzz.onrender.com/nthu-ts-web-injection/api/lab1/chat';
+        const VERIFY_API = 'https://ai-odyssey-backend-rbzz.onrender.com/nthu-ts-web-injection/api/lab1/verify_key';
+        
+        // 對話紀錄存儲鍵名
+        const CHAT_HISTORY_KEY = 'lab1_chat_history';
+        
+        // 頁面載入時恢復對話紀錄
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatHistory();
+        });
+        
+        // 載入對話紀錄
+        function loadChatHistory() {
+            const chatHistory = getChatHistory();
+            
+            // 清空現有訊息
+            chatMessages.innerHTML = '';
+            
+            if (chatHistory.length === 0) {
+                // 如果沒有對話紀錄，顯示初始歡迎訊息
+                addMessageToHistory('assistant', '你好！我是清華大學資訊科學研習社的 AI 智慧助理。有什麼我可以幫助你的嗎？');
+                displayMessage('你好！我是清華大學資訊科學研習社的 AI 智慧助理。有什麼我可以幫助你的嗎？', 'ai');
+            } else {
+                // 載入所有對話紀錄
+                chatHistory.forEach(chat => {
+                    const sender = chat.role === 'user' ? 'user' : 'ai';
+                    displayMessage(chat.content, sender);
+                });
+            }
+        }
+        
+        // 獲取對話紀錄
+        function getChatHistory() {
+            try {
+                const history = localStorage.getItem(CHAT_HISTORY_KEY);
+                return history ? JSON.parse(history) : [];
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+                return [];
+            }
+        }
+        
+        // 保存對話紀錄
+        function saveChatHistory(chatHistory) {
+            try {
+                localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+            } catch (error) {
+                console.error('Error saving chat history:', error);
+            }
+        }
+        
+        // 添加訊息到對話紀錄
+        function addMessageToHistory(role, content) {
+            const chatHistory = getChatHistory();
+            chatHistory.push({ role, content });
+            saveChatHistory(chatHistory);
+        }
+        
+        // 清空 localStorage
+        function clearLocalStorage() {
+            // 確認對話框
+            const confirmed = confirm(
+                '⚠️ 警告：這將清空所有資料！\n\n' +
+                '• 對話紀錄\n' +
+                '• 關卡進度\n' +
+                '• 所有設定\n\n' +
+                '此操作無法復原，確定要繼續嗎？'
+            );
+            
+            if (confirmed) {
+                try {
+                    // 清空所有相關的 localStorage 項目
+                    localStorage.removeItem(CHAT_HISTORY_KEY);
+                    localStorage.removeItem('lab1_completed');
+                    localStorage.removeItem('lab1_completed_time');
+                    localStorage.removeItem('lab2_completed');
+                    localStorage.removeItem('lab2_completed_time');
+                    localStorage.removeItem('lab2_chat_history');
+                    
+                    // 重新載入對話紀錄
+                    loadChatHistory();
+                    
+                    // 顯示成功訊息
+                    alert('✅ 已成功清空所有資料！\n\n頁面已重置為初始狀態。');
+                    
+                } catch (error) {
+                    console.error('Error clearing localStorage:', error);
+                    alert('❌ 清空資料時發生錯誤，請重試。');
+                }
+            }
+        }
+        
+        // 清空按鈕事件監聽器
+        clearStorageBtn.addEventListener('click', clearLocalStorage);
+        
+        // 發送訊息功能
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // 顯示使用者訊息
+            displayMessage(message, 'user');
+            addMessageToHistory('user', message);
+            messageInput.value = '';
+            
+            // 顯示 AI 思考中
+            const thinkingId = addMessage('AI 思考中...', 'ai', true);
+            
+            try {
+                // 獲取完整的對話歷史（包含剛添加的用戶訊息）
+                const conversationHistory = getChatHistory();
+                
+                const response = await fetch(CHAT_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        conversation_history: conversationHistory 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // 移除思考中訊息
+                removeMessage(thinkingId);
+                
+                if (response.ok) {
+                    // 顯示 AI 回應
+                    displayMessage(data.reply, 'ai');
+                    addMessageToHistory('assistant', data.reply);
+                } else {
+                    // 顯示錯誤訊息
+                    const errorMsg = `錯誤: ${data.message || '請求失敗'}`;
+                    displayMessage(errorMsg, 'ai', false, 'error');
+                    addMessageToHistory('assistant', errorMsg);
+                }
+            } catch (error) {
+                // 移除思考中訊息
+                removeMessage(thinkingId);
+                // 顯示網路錯誤
+                const errorMsg = '網路錯誤: 無法連接到伺服器';
+                displayMessage(errorMsg, 'ai', false, 'error');
+                addMessageToHistory('assistant', errorMsg);
+                console.error('Chat error:', error);
+            }
+        });
+        
+        // 驗證金鑰功能
+        verifyKeyBtn.addEventListener('click', async () => {
+            const key = messageInput.value.trim();
+            if (!key) {
+                alert('請先輸入要驗證的金鑰');
+                return;
+            }
+            
+            try {
+                const response = await fetch(VERIFY_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ key: key })
+                });
+                
+                const data = await response.json();
+                
+                // 顯示回應訊息
+                alert(data.message);
+                
+                // 如果驗證成功，記錄進度並跳轉
+                if (data.success) {
+                    // 將 lab1 完成狀態存儲到 localStorage
+                    localStorage.setItem('lab1_completed', 'true');
+                    localStorage.setItem('lab1_completed_time', new Date().toISOString());
+                    
+                    // 等待 2 秒後跳轉到 lab2
+                    setTimeout(() => {
+                        window.location.href = 'lab2.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                alert('網路錯誤: 無法連接到伺服器');
+                console.error('Verify error:', error);
+            }
+        });
+        
+        // 顯示訊息到對話視窗
+        function displayMessage(content, sender, isThinking = false, type = 'normal') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const messageContent = document.createElement('div');
+            let bgColor, textColor;
+            
+            if (sender === 'user') {
+                bgColor = 'bg-blue-600';
+                textColor = 'text-white';
+            } else {
+                if (type === 'error') {
+                    bgColor = 'bg-red-800';
+                    textColor = 'text-red-200';
+                } else if (isThinking) {
+                    bgColor = 'bg-gray-600';
+                    textColor = 'text-gray-300';
+                } else {
+                    bgColor = 'bg-gray-700';
+                    textColor = 'text-gray-200';
+                }
+            }
+            
+            messageContent.className = `${bgColor} ${textColor} px-4 py-2 rounded-lg max-w-xs`;
+            messageContent.innerHTML = `<p class="text-sm">${content}</p>`;
+            
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            // 自動滾動到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 返回訊息 ID 用於刪除
+            return messageDiv;
+        }
+        
+        // 添加訊息到對話視窗（用於臨時訊息如思考中）
+        function addMessage(content, sender, isThinking = false, type = 'normal') {
+            return displayMessage(content, sender, isThinking, type);
+        }
+        
+        // 移除訊息
+        function removeMessage(messageElement) {
+            if (messageElement && messageElement.parentNode) {
+                messageElement.parentNode.removeChild(messageElement);
+            }
+        }
+        
+        // 讓輸入框在 Enter 鍵時發送訊息
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
