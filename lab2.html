@@ -456,6 +456,9 @@
                     <p class="text-gray-700 font-medium">
                         🍦 你獲得了冰淇淋獎勵！
                     </p>
+                    <p class="text-gray-700 font-medium">
+                        請憑此截圖與工作人員兌換冰淇淋券！
+                    </p>
                     <p class="text-sm text-gray-600 mt-1">
                         感謝你完成了清華大學 AI 滲透任務
                     </p>
@@ -663,7 +666,6 @@
             const confirmed = confirm(
                 '⚠️ 警告：這將清空所有資料！\n\n' +
                 '• 對話紀錄\n' +
-                '• 關卡進度\n' +
                 '• 所有設定\n\n' +
                 '此操作無法復原，確定要繼續嗎？'
             );
@@ -829,11 +831,6 @@
             // 添加點擊效果
             claimIceCreamBtn.innerHTML = '🍦 已領取！';
             claimIceCreamBtn.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
-            
-            // 顯示成功訊息
-            setTimeout(() => {
-                alert('🎉 恭喜！你已成功領取冰淇淋獎勵！\n\n感謝你完成了清華大學 AI 滲透任務！');
-            }, 500);
         });
         
         // 返回首頁

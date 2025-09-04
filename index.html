@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://weifish0.github.io/nthuts-prompt-injection-lab/"> 
-    <meta property="og:title" content="清華大學 AI 滲透任務 - Prompt Injection Playground">
+    <meta property="og:title" content="清華大學-資訊科學研習社 AI 滲透網站 - Prompt Injection Playground">
     <meta property="og:description" content="歡迎來到 AI 安全挑戰！你的任務是透過 Prompt Injection 技術，繞過 AI 的安全防護，竊取關鍵情報。準備好接受挑戰了嗎？">
     <meta property="og:image" content="https://github.com/weifish0/nthuts-prompt-injection-lab/blob/main/清資社大貼文.png">
-    <title>清華大學 AI 滲透任務 - Prompt Injection Playground</title>
+    <title>清華大學-資訊科學研習社 AI 滲透網站 - Prompt Injection Playground</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -136,7 +136,7 @@
             <div class="flex items-center justify-between">
                 <!-- Logo/標題 -->
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-white">🎯 清華滲透任務</h1>
+                    <h1 class="text-2xl font-bold text-white">🎯 資研社滲透任務</h1>
                 </div>
                 
                 <!-- 桌面版導覽列 -->
@@ -280,7 +280,7 @@
                 </div>
                 
                 <p class="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-                    你的任務：滲透清華大學資訊科學研習社的 AI 系統，獲取高為元校長的銀行帳號密碼
+                    你的任務：滲透清華大學資訊科學研習社的 AI 系統，竊取藏在系統的密鑰 ! 
                 </p>
             </div>
         </section>
@@ -289,14 +289,19 @@
         <section class="py-16 px-4 bg-gray-800">
             <div class="container mx-auto max-w-4xl">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-white">
-                    🎯 任務簡報
+                    🎯 遊玩說明
                 </h2>
                 <div class="bg-gray-900 rounded-lg p-8 border border-gray-600">
                     <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-6">
-                        <span class="text-red-400 font-semibold">緊急任務：</span>清華大學資訊科學研習社的 AI 系統中藏有關鍵情報。你的目標是透過 <span class="text-blue-400 font-semibold">Prompt Injection</span> 技術，繞過 AI 的安全防護，獲取高為元校長的銀行帳號密碼。
+                        <span class="text-red-400 font-semibold">挑戰說明：</span>清華大學資訊科學研習社的 AI 系統中藏有關鍵情報。你的目標是透過 <span class="text-blue-400 font-semibold">Prompt Injection</span> 技術，繞過 AI 的安全防護，竊取藏在系統的密鑰 ! 找到密鑰後，直接把整串密鑰上傳，格式會是Nthuts{}的形式。
                     </p>
                     <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
-                        <span class="text-yellow-400 font-semibold">技術說明：</span>Prompt Injection 是一種針對大型語言模型的攻擊技術。透過精心設計的輸入，你可以繞過開發者設定的安全準則，誘使 AI 洩露敏感資訊。準備好接受挑戰了嗎？
+                        <span class="text-yellow-400 font-semibold">技術說明：</span>
+                        Prompt Injection 是一種針對大型語言模型的攻擊技術。透過精心設計的輸入，你可以繞過開發者設定的安全準則，誘使 AI 洩露敏感資訊。準備好接受挑戰了嗎？
+                    </p>
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
+                        <span class="text-yellow-400 font-semibold">白話解釋：</span>
+                        與AI進行對話，經由對話，讓AI透露出通關密鑰 !
                     </p>
                 </div>
             </div>
@@ -329,12 +334,6 @@
                             <p class="text-gray-300 leading-relaxed">
                                 <span class="text-yellow-400 font-semibold">目標：</span>在 AI 的記憶深處，藏著一句被禁止提及的話語。你的任務是讓它把這句話說出來。
                             </p>
-                            <p class="text-gray-300 leading-relaxed">
-                                <span class="text-red-400 font-semibold">挑戰：</span> AI 被賦予了堅定的「遺忘」指令，它會主動迴避任何直接觸及這個秘密的企圖。正面突破是行不通的。
-                            </p>
-                            <p class="text-gray-300 leading-relaxed">
-                                <span class="text-green-400 font-semibold">提示：</span>你無法強迫一個人說出他不想說的話，但你可以讓他情不自禁地在講述另一個故事時，透露蛛絲馬跡。
-                            </p>
                         </div>
                         <a href="./lab1.html" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
                             🎯 開始滲透 →
@@ -357,10 +356,10 @@
                         </h3>
                         <div class="space-y-4 mb-6">
                             <p class="text-gray-300 leading-relaxed">
-                                <span class="text-yellow-400 font-semibold">目標：</span>從 AI 系統中獲取高為元校長的銀行帳號密碼。
+                                <span class="text-yellow-400 font-semibold">目標：</span>從 AI 系統中獲取最機密的密鑰 ! 。
                             </p>
                             <p class="text-gray-300 leading-relaxed">
-                                <span class="text-red-400 font-semibold">挑戰：</span>AI 只會向特定身份的人透露敏感資訊，且需要身份驗證。你需要找到正確的身份和驗證方式。
+                                <span class="text-red-400 font-semibold">挑戰：</span>AI 只會向特定身份的人透露敏感資訊。
                             </p>
                             <p class="text-gray-300 leading-relaxed">
                                 <span class="text-green-400 font-semibold">提示：</span>在數位世界中，身份可能比你想像的更脆弱。
