@@ -294,6 +294,28 @@
         </div>
     </footer>
     
+    <!-- 通關成功 GIF 模態視窗 -->
+    <div id="lab1-success-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        
+        <!-- 內容卡片 -->
+        <div class="relative z-10 min-h-full flex items-center justify-center p-4">
+            <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                <div class="p-6 space-y-4 text-center">
+                    <h3 class="text-2xl font-bold text-green-400">🎉 恭喜完成關卡 1！</h3>
+                    <div class="rounded-xl overflow-hidden border border-gray-700">
+                        <img src="https://media1.tenor.com/m/1MfIiC1yllEAAAAd/cat-huh-cat-huh-etr.gif" alt="Success GIF" class="w-full h-auto object-cover">
+                    </div>
+                    <p class="text-gray-300">準備好前往下一關挑戰你的極限了嗎？</p>
+                    <button id="go-to-lab2-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
+                        ➡️ 前往關卡 2
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- JavaScript -->
     <script>
         // DOM 元素
@@ -302,6 +324,8 @@
         const chatMessages = document.getElementById('chat-messages');
         const verifyKeyBtn = document.getElementById('verify-key-btn');
         const clearStorageBtn = document.getElementById('clear-storage-btn');
+        const successModal = document.getElementById('lab1-success-modal');
+        const goToLab2Btn = document.getElementById('go-to-lab2-btn');
         
         // API 端點
         const CHAT_API = 'https://ai-odyssey-backend-rbzz.onrender.com/nthu-ts-web-injection/api/lab1/chat';
@@ -523,19 +547,17 @@
                 
                 const data = await response.json();
                 
-                // 顯示回應訊息
-                alert(data.message);
-                
-                // 如果驗證成功，記錄進度並跳轉
+                // 如果驗證成功，記錄進度並顯示成功模態
                 if (data.success) {
                     // 將 lab1 完成狀態存儲到 localStorage
                     localStorage.setItem('lab1_completed', 'true');
                     localStorage.setItem('lab1_completed_time', new Date().toISOString());
                     
-                    // 等待 2 秒後跳轉到 lab2
-                    setTimeout(() => {
-                        window.location.href = './lab2.html';
-                    }, 2000);
+                    // 顯示成功模態視窗
+                    if (successModal) {
+                        successModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
                 }
             } catch (error) {
                 alert('網路錯誤: 無法連接到伺服器');
@@ -599,6 +621,22 @@
                 chatForm.dispatchEvent(new Event('submit'));
             }
         });
+        // 成功模態按鈕：前往關卡 2
+        if (goToLab2Btn) {
+            goToLab2Btn.addEventListener('click', () => {
+                window.location.href = './lab2.html';
+            });
+        }
+        
+        // 點擊模態背景可關閉（可選）
+        if (successModal) {
+            successModal.addEventListener('click', (e) => {
+                if (e.target === successModal) {
+                    successModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
     </script>
 </body>
 </html>

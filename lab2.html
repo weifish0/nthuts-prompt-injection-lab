@@ -417,6 +417,28 @@
         </div>
     </footer>
     
+    <!-- 通關成功 GIF 模態視窗（先於冰淇淋卡片顯示） -->
+    <div id="lab2-success-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        
+        <!-- 內容卡片 -->
+        <div class="relative z-10 min-h-full flex items-center justify-center p-4">
+            <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                <div class="p-6 space-y-4 text-center">
+                    <h3 class="text-2xl font-bold text-green-400">🎉 恭喜完成關卡 2！</h3>
+                    <div class="rounded-xl overflow-hidden border border-gray-700">
+                        <img src="https://media1.tenor.com/m/1MfIiC1yllEAAAAd/cat-huh-cat-huh-etr.gif" alt="Success GIF" class="w-full h-auto object-cover">
+                    </div>
+                    <p class="text-gray-300">點擊下方按鈕領取你的冰淇淋獎勵！</p>
+                    <button id="show-ice-cream-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300">
+                        🍦 領取冰淇淋獎勵
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- 冰淇淋獎勵彈出視窗 -->
     <div id="ice-cream-modal" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center hidden">
         <!-- 彩帶效果 -->
@@ -498,6 +520,8 @@
         const claimIceCreamBtn = document.getElementById('claim-ice-cream-btn');
         const backToHomeBtn = document.getElementById('back-to-home-btn');
         const confettiContainer = document.getElementById('confetti-container');
+        const lab2SuccessModal = document.getElementById('lab2-success-modal');
+        const showIceCreamBtn = document.getElementById('show-ice-cream-btn');
         const clearStorageBtn = document.getElementById('clear-storage-btn');
         
         // API 端點
@@ -770,18 +794,39 @@
                 
                 const data = await response.json();
                 
-                // 如果驗證成功，顯示冰淇淋獎勵卡片
+                // 如果驗證成功，先顯示 GIF 成功模態
                 if (data.success) {
                     // 將 lab2 完成狀態存儲到 localStorage
                     localStorage.setItem('lab2_completed', 'true');
                     localStorage.setItem('lab2_completed_time', new Date().toISOString());
                     
-                    // 顯示獎勵卡片
-                    showIceCreamReward();
+                    if (lab2SuccessModal) {
+                        lab2SuccessModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
                 } else {
                     // 顯示錯誤訊息
                     alert(data.message);
                 }
+        // 成功模態：領取冰淇淋 → 顯示冰淇淋卡片
+        if (showIceCreamBtn) {
+            showIceCreamBtn.addEventListener('click', () => {
+                if (lab2SuccessModal) {
+                    lab2SuccessModal.classList.add('hidden');
+                }
+                showIceCreamReward();
+            });
+        }
+        
+        // 點擊 GIF 模態背景可關閉（保持邏輯：關閉僅關閉此層）
+        if (lab2SuccessModal) {
+            lab2SuccessModal.addEventListener('click', (e) => {
+                if (e.target === lab2SuccessModal) {
+                    lab2SuccessModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
             } catch (error) {
                 alert('網路錯誤: 無法連接到伺服器');
                 console.error('Verify error:', error);
